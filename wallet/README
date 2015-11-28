@@ -108,6 +108,29 @@ separate 'prod' branch that gets rebased against master with each released versi
 	gradle clean test build
 
 
+SIGNING:
+
+Some notes on how to sign .apk files:
+Source: https://developer.android.com/tools/publishing/app-signing.html
+
+Generating a key:
+keytool -genkey -v -alias cjp -keyalg RSA -keysize 2048 -validity 20000
+
+Listing key info:
+keytool -list -v
+
+Self-signing a key:
+keytool -selfcert -alias cjp
+
+Signing an apk with the created key:
+jarsigner -sigalg SHA1withRSA -digestalg SHA1 wallet.apk cjp
+
+Zip-aligning after signing (people write this reduces memory consumption):
+zipalign -v 4 yourapk.apk yourapkalign.apk
+
+Keys are stored by default in ~/.keystore
+
+
 SETTING UP FOR DEVELOPMENT
 
 You should be able to import the project into Android Studio, as it uses Gradle for building.
