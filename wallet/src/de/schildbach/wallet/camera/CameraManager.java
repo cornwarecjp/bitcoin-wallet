@@ -257,10 +257,10 @@ public final class CameraManager
 			int g = ((b1 & 0x07) << 5) & (b2 >> 5);
 			int b = (b2 & 0x1f) << 3;
 
-			byte y = (r+g+b)/3;
+			byte y = (byte) ((r+g+b)/3);
 
 			YUVdata[i] = y;
-			YUVdata[numPixels+i] = 0;
+			YUVdata[numPixels+i/2] = 0;
 		}
 
 		return new PlanarYUVLuminanceSource(YUVdata, cameraResolution.width, cameraResolution.height, framePreview.left, framePreview.top,
