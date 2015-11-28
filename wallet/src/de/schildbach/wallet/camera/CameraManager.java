@@ -242,12 +242,28 @@ public final class CameraManager
 	public PlanarYUVLuminanceSource buildLuminanceSource(final byte[] data)
 	{
 		/*
-		TODO: Convert from RGB565 to YCbCr_420_SP (NV21) format.
-		RGB565: interleaved 16BPP
-		NV21: planar: 8-bit Y, 8+8-bit interleaved, subsampled Cr/Cb
+		Convert from RGB565 to YCbCr_420_SP (NV21) format.
+		RGB565: interleaved R,G,B (16 bpp)
+		NV21: planar: 8-bit Y, 8+8-bit interleaved, 2x2 subsampled Cr/Cb (12 bpp)
 		*/
+		int numPixels = data.length/2;
+		byte[] YUVdata = new byte[numPixels + numPixels/2];
+		for(int i=0; i < numPixels; i++)
+		{
+			byte b1 = data[2*i];
+			byte b2 = data[2*i+1];
 
-		return new PlanarYUVLuminanceSource(data, cameraResolution.width, cameraResolution.height, framePreview.left, framePreview.top,
+			int r = b1 & 0xf8;
+			int g = ((b1 & 0x07) << 5) & (b2 >> 5);
+			int b = (b2 & 0x1f) << 3;
+
+			byte y = (r+g+b)/3;
+
+			YUVdata[i] = y;
+			YUVdata[numPixels+i] = 0;
+		}
+
+		return new PlanarYUVLuminanceSource(YUVdata, cameraResolution.width, cameraResolution.height, framePreview.left, framePreview.top,
 				framePreview.width(), framePreview.height(), false);
 	}
 
