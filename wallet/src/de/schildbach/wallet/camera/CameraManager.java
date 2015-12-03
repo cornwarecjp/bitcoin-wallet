@@ -260,9 +260,9 @@ public final class CameraManager
 			byte b1 = data[2*i];
 			byte b2 = data[2*i+1];
 
-			int r = b1 & 0xf8;
-			int g = ((b1 & 0x07) << 5) & (b2 >> 5);
-			int b = (b2 & 0x1f) << 3;
+			int r = b2 & 0xf8;
+			int g = ((b2 & 0x07) << 5) | ((b1 & 0xe0) >> 3);
+			int b = (b1 & 0x1f) << 3;
 
 			byte y = (byte) ((r+g+b)/3);
 
