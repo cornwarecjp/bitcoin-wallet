@@ -17,11 +17,6 @@
 
 package de.schildbach.wallet.camera;
 
-//Temporary, for debugging:
-//import java.io.File;
-//import java.io.FileOutputStream;
-//import android.os.Environment;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -57,8 +52,6 @@ public final class CameraManager
 	private Rect framePreview;
 
 	private static final Logger log = LoggerFactory.getLogger(CameraManager.class);
-
-	//static int imageCount = 0; //debugging only
 
 	public Rect getFrame()
 	{
@@ -248,6 +241,8 @@ public final class CameraManager
 
 	public PlanarYUVLuminanceSource buildLuminanceSource(final byte[] data)
 	{
+		log.info("Received camera data");
+
 		/*
 		Convert from RGB565 to YCbCr_420_SP (NV21) format.
 		RGB565: interleaved R,G,B (16 bpp)
@@ -264,43 +259,13 @@ public final class CameraManager
 			int g = ((b2 & 0x07) << 5) | ((b1 & 0xe0) >> 3);
 			int b = (b1 & 0x1f) << 3;
 
-			byte y = (byte) ((r+g+b)/3);
+			byte y = (byte) ( ( ((r+b)>>1) + g ) >> 1);
 
 			YUVdata[i] = y;
 			YUVdata[numPixels+i/2] = 0;
 		}
 
-		/*
-		imageCount++;
-		log.info("Preview image received");
-		if(imageCount == 3)
-		{
-			try
-			{
-				log.info("Saving preview image data");
-				final File before_file = new File(
-					Environment.getExternalStoragePublicDirectory(
-						Environment.DIRECTORY_DOWNLOADS),
-						"before.dat");
-				FileOutputStream before_stream = new FileOutputStream(before_file);
-				before_stream.write(data);
-				before_stream.close();
-
-				final File after_file = new File(
-					Environment.getExternalStoragePublicDirectory(
-						Environment.DIRECTORY_DOWNLOADS),
-						"after.dat");
-				FileOutputStream after_stream = new FileOutputStream(after_file);
-				after_stream.write(YUVdata);
-				after_stream.close();
-				log.info("Done saving preview image data");
-			}
-			catch (final IOException x)
-			{
-				log.error("problem saving image data", x);
-			}
-		}
-		*/
+		log.info("Color-converted camera data");
 
 		return new PlanarYUVLuminanceSource(YUVdata, cameraResolution.width, cameraResolution.height, framePreview.left, framePreview.top,
 				framePreview.width(), framePreview.height(), false);

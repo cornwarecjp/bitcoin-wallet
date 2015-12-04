@@ -308,6 +308,7 @@ public final class ScanActivity extends Activity implements SurfaceHolder.Callba
 
 		private void decode(final byte[] data)
 		{
+			log.info("Received camera data");
 			final PlanarYUVLuminanceSource source = cameraManager.buildLuminanceSource(data);
 			final BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
 
@@ -349,6 +350,7 @@ public final class ScanActivity extends Activity implements SurfaceHolder.Callba
 			catch (final ReaderException x)
 			{
 				// retry
+				log.info("Nothing found -> retry");
 				cameraHandler.post(fetchAndDecodeRunnable);
 			}
 			finally
