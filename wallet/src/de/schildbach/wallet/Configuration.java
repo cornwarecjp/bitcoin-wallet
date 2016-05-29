@@ -47,12 +47,14 @@ public class Configuration
 
 	public static final String PREFS_KEY_BTC_PRECISION = "btc_precision";
 	public static final String PREFS_KEY_OWN_NAME = "own_name";
+	public static final String PREFS_KEY_SEND_COINS_AUTOCLOSE = "send_coins_autoclose";
 	public static final String PREFS_KEY_CONNECTIVITY_NOTIFICATION = "connectivity_notification";
 	public static final String PREFS_KEY_EXCHANGE_CURRENCY = "exchange_currency";
 	public static final String PREFS_KEY_TRUSTED_PEER = "trusted_peer";
 	public static final String PREFS_KEY_TRUSTED_PEER_ONLY = "trusted_peer_only";
 	public static final String PREFS_KEY_BLOCK_EXPLORER = "block_explorer";
 	public static final String PREFS_KEY_DATA_USAGE = "data_usage";
+	public static final String PREFS_KEY_REMIND_BALANCE = "remind_balance";
 	public static final String PREFS_KEY_DISCLAIMER = "disclaimer";
 	private static final String PREFS_KEY_LABS_QR_PAYMENT_REQUEST = "labs_qr_payment_request";
 
@@ -135,6 +137,11 @@ public class Configuration
 		return Strings.emptyToNull(prefs.getString(PREFS_KEY_OWN_NAME, "").trim());
 	}
 
+	public boolean getSendCoinsAutoclose()
+	{
+		return prefs.getBoolean(PREFS_KEY_SEND_COINS_AUTOCLOSE, true);
+	}
+
 	public boolean getConnectivityNotificationEnabled()
 	{
 		return prefs.getBoolean(PREFS_KEY_CONNECTIVITY_NOTIFICATION, false);
@@ -142,7 +149,7 @@ public class Configuration
 
 	public String getTrustedPeerHost()
 	{
-		return prefs.getString(PREFS_KEY_TRUSTED_PEER, "").trim();
+		return Strings.emptyToNull(prefs.getString(PREFS_KEY_TRUSTED_PEER, "").trim());
 	}
 
 	public boolean getTrustedPeerOnly()
@@ -153,6 +160,16 @@ public class Configuration
 	public Uri getBlockExplorer()
 	{
 		return Uri.parse(prefs.getString(PREFS_KEY_BLOCK_EXPLORER, res.getStringArray(R.array.preferences_block_explorer_values)[0]));
+	}
+
+	public boolean remindBalance()
+	{
+		return prefs.getBoolean(PREFS_KEY_REMIND_BALANCE, true);
+	}
+
+	public void setRemindBalance(final boolean remindBalance)
+	{
+		prefs.edit().putBoolean(PREFS_KEY_REMIND_BALANCE, remindBalance).apply();
 	}
 
 	public boolean remindBackup()
@@ -212,6 +229,11 @@ public class Configuration
 			log.info("detected app upgrade: " + lastVersionCode + " -> " + currentVersionCode);
 		else if (currentVersionCode < lastVersionCode)
 			log.warn("detected app downgrade: " + lastVersionCode + " -> " + currentVersionCode);
+	}
+
+	public boolean hasBeenUsed()
+	{
+		return prefs.contains(PREFS_KEY_LAST_USED);
 	}
 
 	public long getLastUsedAgo()

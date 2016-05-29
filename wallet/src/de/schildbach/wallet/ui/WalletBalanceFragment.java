@@ -19,10 +19,9 @@ package de.schildbach.wallet.ui;
 
 import javax.annotation.Nullable;
 
-import org.bitcoinj.core.AddressFormatException;
 import org.bitcoinj.core.Coin;
-import org.bitcoinj.core.Wallet;
 import org.bitcoinj.utils.Fiat;
+import org.bitcoinj.wallet.Wallet;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -45,7 +44,6 @@ import de.schildbach.wallet.Configuration;
 import de.schildbach.wallet.Constants;
 import de.schildbach.wallet.ExchangeRatesProvider;
 import de.schildbach.wallet.ExchangeRatesProvider.ExchangeRate;
-import de.schildbach.wallet.data.PaymentIntent;
 import de.schildbach.wallet.WalletApplication;
 import de.schildbach.wallet.service.BlockchainState;
 import de.schildbach.wallet.service.BlockchainStateLoader;
@@ -186,7 +184,8 @@ public final class WalletBalanceFragment extends Fragment
 	public void onPrepareOptionsMenu(final Menu menu)
 	{
 		final boolean hasSomeBalance = balance != null && !balance.isLessThan(SOME_BALANCE_THRESHOLD);
-		menu.findItem(R.id.wallet_balance_options_donate).setVisible(!Constants.TEST && (!installedFromGooglePlay || hasSomeBalance));
+		menu.findItem(R.id.wallet_balance_options_donate)
+				.setVisible(Constants.DONATION_ADDRESS != null && (!installedFromGooglePlay || hasSomeBalance));
 
 		super.onPrepareOptionsMenu(menu);
 	}
@@ -206,15 +205,7 @@ public final class WalletBalanceFragment extends Fragment
 
 	private void handleDonate()
 	{
-		try
-		{
-			SendCoinsActivity.start(activity, PaymentIntent.fromAddress(Constants.DONATION_ADDRESS, getString(R.string.wallet_donate_address_label)));
-		}
-		catch (final AddressFormatException x)
-		{
-			// cannot happen, address is hardcoded
-			throw new RuntimeException(x);
-		}
+		SendCoinsActivity.startDonate(activity, null, 0);
 	}
 
 	private void updateView()

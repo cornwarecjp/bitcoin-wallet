@@ -86,13 +86,15 @@ public final class RequestWalletBalanceTask
 			@Override
 			public void run()
 			{
+				org.bitcoinj.core.Context.propagate(Constants.CONTEXT);
+
 				final StringBuilder url = new StringBuilder(Constants.BITEASY_API_URL);
 				url.append("outputs");
 				url.append("?per_page=MAX");
 				url.append("&operator=AND");
 				url.append("&spent_state=UNSPENT");
 				for (final Address address : addresses)
-					url.append("&address[]=").append(address.toString());
+					url.append("&address[]=").append(address.toBase58());
 
 				log.debug("trying to request wallet balance from {}", url);
 

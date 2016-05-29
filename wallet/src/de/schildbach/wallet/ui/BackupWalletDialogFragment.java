@@ -31,9 +31,9 @@ import java.util.TimeZone;
 
 import javax.annotation.Nullable;
 
-import org.bitcoinj.core.Wallet;
-import org.bitcoinj.store.WalletProtobufSerializer;
 import org.bitcoinj.wallet.Protos;
+import org.bitcoinj.wallet.Wallet;
+import org.bitcoinj.wallet.WalletProtobufSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -307,7 +307,7 @@ public class BackupWalletDialogFragment extends DialogFragment
 	private File determineBackupFile()
 	{
 		Constants.Files.EXTERNAL_WALLET_BACKUP_DIR.mkdirs();
-		checkState(Constants.Files.EXTERNAL_WALLET_BACKUP_DIR.isDirectory());
+		checkState(Constants.Files.EXTERNAL_WALLET_BACKUP_DIR.isDirectory(), "%s is not a directory", Constants.Files.EXTERNAL_WALLET_BACKUP_DIR);
 
 		final DateFormat dateFormat = Iso8601Format.newDateFormat();
 		dateFormat.setTimeZone(TimeZone.getDefault());

@@ -15,6 +15,11 @@
 		android:title="@string/preferences_own_name_title" />
 
 	<CheckBoxPreference
+		android:defaultValue="true"
+		android:key="send_coins_autoclose"
+		android:summary="@string/preferences_send_coins_autoclose_summary"
+		android:title="@string/preferences_send_coins_autoclose_title" />
+	<CheckBoxPreference
 		android:defaultValue="false"
 		android:key="connectivity_notification"
 		android:summary="@string/preferences_connectivity_notification_summary"
@@ -47,6 +52,12 @@
 			android:targetPackage="com.android.settings" />
 	</Preference>
 
+	<CheckBoxPreference
+		android:defaultValue="true"
+		android:key="remind_balance"
+		android:summary="@string/preferences_remind_balance_summary"
+		android:title="@string/preferences_remind_balance_title" />
+
 	<PreferenceCategory android:title="@string/preferences_category_labs" >
 		<Preference
 			android:icon="@drawable/ic_warning_grey600_24dp"
@@ -56,7 +67,7 @@
 		<CheckBoxPreference
 			android:defaultValue="true"
 			android:key="disclaimer"
-			android:summary="Have you really read the safety notes? Did you already back up your private keys to a safe place?"
+			android:summary="Have you really read the safety notes? Did you already back up your wallet to a safe place?"
 			android:title="Show disclaimer" />
 		<CheckBoxPreference
 			android:defaultValue="false"

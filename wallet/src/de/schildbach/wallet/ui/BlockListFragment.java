@@ -26,7 +26,7 @@ import java.util.concurrent.RejectedExecutionException;
 import org.bitcoinj.core.Sha256Hash;
 import org.bitcoinj.core.StoredBlock;
 import org.bitcoinj.core.Transaction;
-import org.bitcoinj.core.Wallet;
+import org.bitcoinj.wallet.Wallet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -317,6 +317,8 @@ public final class BlockListFragment extends Fragment implements BlockListAdapte
 		@Override
 		public Set<Transaction> loadInBackground()
 		{
+			org.bitcoinj.core.Context.propagate(Constants.CONTEXT);
+
 			final Set<Transaction> transactions = wallet.getTransactions(true);
 
 			final Set<Transaction> filteredTransactions = new HashSet<Transaction>(transactions.size());

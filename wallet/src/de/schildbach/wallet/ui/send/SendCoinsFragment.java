@@ -34,14 +34,14 @@ import org.bitcoinj.core.TransactionConfidence;
 import org.bitcoinj.core.TransactionConfidence.ConfidenceType;
 import org.bitcoinj.core.VerificationException;
 import org.bitcoinj.core.VersionedChecksummedBytes;
-import org.bitcoinj.core.Wallet;
-import org.bitcoinj.core.Wallet.BalanceType;
-import org.bitcoinj.core.Wallet.CouldNotAdjustDownwards;
-import org.bitcoinj.core.Wallet.DustySendRequested;
-import org.bitcoinj.core.Wallet.SendRequest;
 import org.bitcoinj.protocols.payments.PaymentProtocol;
 import org.bitcoinj.utils.MonetaryFormat;
+import org.bitcoinj.wallet.Wallet;
 import org.bitcoinj.wallet.KeyChain.KeyPurpose;
+import org.bitcoinj.wallet.SendRequest;
+import org.bitcoinj.wallet.Wallet.BalanceType;
+import org.bitcoinj.wallet.Wallet.CouldNotAdjustDownwards;
+import org.bitcoinj.wallet.Wallet.DustySendRequested;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongycastle.crypto.params.KeyParameter;
@@ -287,9 +287,26 @@ public final class SendCoinsFragment extends Fragment
 					if (state == State.SENDING)
 					{
 						if (confidenceType == ConfidenceType.DEAD)
+						{
 							setState(State.FAILED);
+						}
 						else if (numBroadcastPeers > 1 || confidenceType == ConfidenceType.BUILDING)
+						{
 							setState(State.SENT);
+
+							// Auto-close the dialog after a short delay
+							if (config.getSendCoinsAutoclose())
+							{
+								handler.postDelayed(new Runnable()
+								{
+									@Override
+									public void run()
+									{
+										activity.finish();
+									}
+								}, 500);
+							}
+						}
 					}
 
 					if (reason == ChangeReason.SEEN_PEERS && confidenceType == ConfidenceType.PENDING)
@@ -1123,6 +1140,9 @@ public final class SendCoinsFragment extends Fragment
 
 	private void updateView()
 	{
+		if (!isResumed())
+			return;
+
 		if (paymentIntent != null)
 		{
 			final MonetaryFormat btcFormat = config.getFormat();
@@ -1168,7 +1188,7 @@ public final class SendCoinsFragment extends Fragment
 
 				receivingStaticAddressView.setText(WalletUtils.formatAddress(validatedAddress.address, Constants.ADDRESS_FORMAT_GROUP_SIZE,
 						Constants.ADDRESS_FORMAT_LINE_SIZE));
-				final String addressBookLabel = AddressBookProvider.resolveLabel(activity, validatedAddress.address.toString());
+				final String addressBookLabel = AddressBookProvider.resolveLabel(activity, validatedAddress.address.toBase58());
 				final String staticLabel;
 				if (addressBookLabel != null)
 					staticLabel = addressBookLabel;

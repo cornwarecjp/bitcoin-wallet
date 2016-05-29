@@ -3,12 +3,12 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	package="de.schildbach.wallet_test"
 	android:installLocation="internalOnly"
-	android:versionCode="234"
-	android:versionName="4.44-test" >
+	android:versionCode="243"
+	android:versionName="4.53-test" >
 
 	<uses-sdk
 		android:minSdkVersion="15"
-		android:targetSdkVersion="16"
+		android:targetSdkVersion="21"
 		tools:ignore="OldTargetApi" />
 
 	<uses-permission android:name="android.permission.INTERNET" />
@@ -214,7 +214,7 @@
 			android:name="de.schildbach.wallet.offline.AcceptBluetoothService"
 			android:exported="false" />
 
-		<receiver android:name="de.schildbach.wallet.service.AutosyncReceiver" >
+		<receiver android:name="de.schildbach.wallet.service.BootstrapReceiver" >
 			<intent-filter>
 				<action android:name="android.intent.action.BOOT_COMPLETED" />
 			</intent-filter>
@@ -225,6 +225,10 @@
 
 		<service
 			android:name="de.schildbach.wallet.service.UpgradeWalletService"
+			android:exported="false" />
+
+		<service
+			android:name="de.schildbach.wallet.service.InactivityNotificationService"
 			android:exported="false" />
 
 		<meta-data
