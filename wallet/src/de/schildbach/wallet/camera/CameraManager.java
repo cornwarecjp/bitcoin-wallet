@@ -252,16 +252,16 @@ public final class CameraManager
 		byte[] YUVdata = new byte[numPixels + numPixels/2];
 		for(int i=0; i < numPixels; i++)
 		{
-			byte b1 = data[2*i];
+			//byte b1 = data[2*i];
 			byte b2 = data[2*i+1];
 
-			int r = b2 & 0xf8;
-			int g = ((b2 & 0x07) << 5) | ((b1 & 0xe0) >> 3);
-			int b = (b1 & 0x1f) << 3;
+			//int r = b2 & 0xf8;
+			//int g = ((b2 & 0x07) << 5) | ((b1 & 0xe0) >> 3);
+			//int b = (b1 & 0x1f) << 3;
 
-			byte y = (byte) ( ( ((r+b)>>1) + g ) >> 1);
+			//byte y = (byte) ( ( ((r+b)>>1) + g ) >> 1);
 
-			YUVdata[i] = y;
+			YUVdata[i] = b2;
 			YUVdata[numPixels+i/2] = 0;
 		}
 
